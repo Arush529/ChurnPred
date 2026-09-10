@@ -17,7 +17,7 @@ window.addEventListener('load', () => {
                 
                 // EDIT: Removed the \n here to force the text into one long horizontal line
                 this.props = { 
-                    text: "Telco Customer Churn Predictor", 
+                    text: "Telco Customer\nChurn Predictor", 
                     color: "#ffffff", 
                     warpStrength: 0.08, warpScale: 1.7, speed: 0.55, pointerInfluence: 0.42, pointerStrength: 0.38, refraction: 0.018, ripple: true, fontWeight: 800, fontFamily: '"Inter", ui-sans-serif, system-ui, sans-serif', letterSpacing: -0.04, lineHeight: 0.95 
                 };
