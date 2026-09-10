@@ -1,6 +1,6 @@
 # ✦ Telco Customer Churn Predictor
 
-[![Live Demo](https://img.shields.io/badge/Demo-Live_Web_App-a4f275?style=for-the-badge&logoColor=black)](#) *[Insert your GitHub Pages link here]*
+[![Live Demo]([https://img.shields.io/badge/Demo-Live_Web_App-a4f275?style=for-the-badge&logoColor=black](https://churn-pred-mu.vercel.app/))](#)
 
 A lightweight, highly interactive web application that predicts telecom customer churn in real-time. Built entirely with Vanilla JavaScript, it executes an XGBoost machine learning model directly in the browser—requiring absolutely no backend server or API calls.
 
