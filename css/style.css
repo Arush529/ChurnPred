@@ -1,3 +1,6 @@
+/* ==========================================
+   1. GLOBAL VARIABLES & BASE STYLES
+   ========================================== */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
@@ -45,6 +48,9 @@ body {
     pointer-events: none;
 }
 
+/* ==========================================
+   2. NAVIGATION BAR
+   ========================================== */
 nav {
     width: 100%;
     display: flex;
@@ -57,17 +63,12 @@ nav {
 .nav-brand {
     display: flex;
     align-items: center;
-    gap: 10px;
     font-weight: bold;
-    font-size: 1.125rem;
 }
 
 .nav-icon {
     background: var(--fx-green);
     color: #000;
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -79,16 +80,17 @@ nav {
     gap: 12px;
 }
 
+/* ==========================================
+   3. HERO & TYPOGRAPHY
+   ========================================== */
 header {
     text-align: center;
     margin-bottom: 40px;
     padding: 0 20px;
     width: 100%;
-    max-width: 800px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 1400px !important;
 }
 
 .tag {
@@ -97,13 +99,9 @@ header {
     gap: 8px;
     border: 1px solid var(--fx-line);
     border-radius: 9999px;
-    padding: 6px 16px;
-    font-size: 0.75rem;
     font-weight: 500;
     color: var(--fx-green);
-    margin-bottom: 24px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
     background-color: var(--fx-panel);
 }
 
@@ -111,7 +109,6 @@ header {
     position: relative;
     display: block;
     width: 100%;
-    height: 260px;
     overflow: hidden;
     isolation: isolate;
     margin-bottom: 12px;
@@ -139,17 +136,14 @@ header {
 
 .subtitle {
     color: var(--fx-muted);
-    max-width: 550px;
-    margin: 0 auto 32px auto;
-    font-size: 1rem;
 }
 
+/* ==========================================
+   4. MAIN LAYOUT & PANELS
+   ========================================== */
 .container {
-    width: 100%;
-    max-width: 1152px;
     display: flex;
     flex-direction: column;
-    gap: 24px;
     padding: 0 20px 60px 20px;
 }
 
@@ -166,17 +160,14 @@ header {
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-top: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 16px;
-    padding: 32px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.05);
 }
 
 .section-title {
     color: var(--fx-green);
-    font-size: 0.875rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    margin-bottom: 16px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -191,6 +182,9 @@ header {
     box-shadow: 0 0 8px rgba(164, 242, 117, 0.8);
 }
 
+/* ==========================================
+   5. FORM CONTROLS & SPECULAR ENGINE
+   ========================================== */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -205,7 +199,6 @@ header {
 }
 
 label {
-    font-size: 0.75rem;
     color: var(--fx-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -213,7 +206,6 @@ label {
     line-height: 1;
 }
 
-/* === PURE CSS SPECULAR EFFECT === */
 .css-specular-wrapper {
     position: relative;
     border-radius: 0.375rem;
@@ -227,7 +219,6 @@ label {
     inset: 0;
     border-radius: inherit;
     padding: 1.5px;
-    /* Border thickness */
     background: radial-gradient(70px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
             var(--fx-green) 0%,
             transparent 100%);
@@ -249,15 +240,11 @@ label {
     opacity: 0.6;
 }
 
-/* Inputs and Selects inside the wrapper */
 .css-specular-wrapper input,
 .css-specular-wrapper .select-trigger {
     position: relative;
     z-index: 2;
     width: 100%;
-    height: 2.25rem;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.9rem;
     color: var(--text-main);
     background-color: transparent !important;
     border: none !important;
@@ -345,7 +332,9 @@ label {
     display: block;
 }
 
-/* === FLOW BUTTON ENGINE (FOR SUBMIT) === */
+/* ==========================================
+   6. BUTTONS & ANIMATIONS
+   ========================================== */
 .flow-button {
     position: relative;
     display: flex;
@@ -448,9 +437,7 @@ label {
     background-color: transparent;
     border: 1px solid var(--fx-line);
     color: var(--fx-muted);
-    padding: 10px 20px;
     border-radius: 9999px;
-    font-size: 0.875rem;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -460,6 +447,9 @@ label {
     color: var(--text-main);
 }
 
+/* ==========================================
+   7. PREDICTION RESULTS & GAUGES
+   ========================================== */
 .result-panel {
     display: flex;
     flex-direction: column;
@@ -481,7 +471,6 @@ label {
     margin-top: 32px;
 }
 
-/* === UNIQUE LOADING (MORPH) === */
 #loading-state {
     display: none;
     flex-direction: column;
@@ -514,120 +503,34 @@ label {
     box-shadow: 0 0 16px rgba(164, 242, 117, 0.5);
 }
 
-.morph-cube:nth-child(1) {
-    animation: morph-0 2s infinite ease-in-out;
-    animation-delay: 0s;
-}
-
-.morph-cube:nth-child(2) {
-    animation: morph-1 2s infinite ease-in-out;
-    animation-delay: 0.2s;
-}
-
-.morph-cube:nth-child(3) {
-    animation: morph-2 2s infinite ease-in-out;
-    animation-delay: 0.4s;
-}
-
-.morph-cube:nth-child(4) {
-    animation: morph-3 2s infinite ease-in-out;
-    animation-delay: 0.6s;
-}
+.morph-cube:nth-child(1) { animation: morph-0 2s infinite ease-in-out; animation-delay: 0s; }
+.morph-cube:nth-child(2) { animation: morph-1 2s infinite ease-in-out; animation-delay: 0.2s; }
+.morph-cube:nth-child(3) { animation: morph-2 2s infinite ease-in-out; animation-delay: 0.4s; }
+.morph-cube:nth-child(4) { animation: morph-3 2s infinite ease-in-out; animation-delay: 0.6s; }
 
 @keyframes morph-0 {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1) rotate(0deg);
-        border-radius: 2px;
-    }
-
-    25% {
-        transform: translate(-18px, -18px) scale(1.2) rotate(45deg);
-        border-radius: 50%;
-    }
-
-    50% {
-        transform: translate(-18px, -18px) scale(1) rotate(90deg);
-        border-radius: 2px;
-    }
-
-    75% {
-        transform: translate(0, 0) scale(1.2) rotate(135deg);
-        border-radius: 50%;
-    }
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 2px; }
+    25% { transform: translate(-18px, -18px) scale(1.2) rotate(45deg); border-radius: 50%; }
+    50% { transform: translate(-18px, -18px) scale(1) rotate(90deg); border-radius: 2px; }
+    75% { transform: translate(0, 0) scale(1.2) rotate(135deg); border-radius: 50%; }
 }
-
 @keyframes morph-1 {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1) rotate(0deg);
-        border-radius: 2px;
-    }
-
-    25% {
-        transform: translate(18px, -18px) scale(1.2) rotate(45deg);
-        border-radius: 50%;
-    }
-
-    50% {
-        transform: translate(18px, -18px) scale(1) rotate(90deg);
-        border-radius: 2px;
-    }
-
-    75% {
-        transform: translate(0, 0) scale(1.2) rotate(135deg);
-        border-radius: 50%;
-    }
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 2px; }
+    25% { transform: translate(18px, -18px) scale(1.2) rotate(45deg); border-radius: 50%; }
+    50% { transform: translate(18px, -18px) scale(1) rotate(90deg); border-radius: 2px; }
+    75% { transform: translate(0, 0) scale(1.2) rotate(135deg); border-radius: 50%; }
 }
-
 @keyframes morph-2 {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1) rotate(0deg);
-        border-radius: 2px;
-    }
-
-    25% {
-        transform: translate(18px, 18px) scale(1.2) rotate(45deg);
-        border-radius: 50%;
-    }
-
-    50% {
-        transform: translate(18px, 18px) scale(1) rotate(90deg);
-        border-radius: 2px;
-    }
-
-    75% {
-        transform: translate(0, 0) scale(1.2) rotate(135deg);
-        border-radius: 50%;
-    }
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 2px; }
+    25% { transform: translate(18px, 18px) scale(1.2) rotate(45deg); border-radius: 50%; }
+    50% { transform: translate(18px, 18px) scale(1) rotate(90deg); border-radius: 2px; }
+    75% { transform: translate(0, 0) scale(1.2) rotate(135deg); border-radius: 50%; }
 }
-
 @keyframes morph-3 {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1) rotate(0deg);
-        border-radius: 2px;
-    }
-
-    25% {
-        transform: translate(-18px, 18px) scale(1.2) rotate(45deg);
-        border-radius: 50%;
-    }
-
-    50% {
-        transform: translate(-18px, 18px) scale(1) rotate(90deg);
-        border-radius: 2px;
-    }
-
-    75% {
-        transform: translate(0, 0) scale(1.2) rotate(135deg);
-        border-radius: 50%;
-    }
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); border-radius: 2px; }
+    25% { transform: translate(-18px, 18px) scale(1.2) rotate(45deg); border-radius: 50%; }
+    50% { transform: translate(-18px, 18px) scale(1) rotate(90deg); border-radius: 2px; }
+    75% { transform: translate(0, 0) scale(1.2) rotate(135deg); border-radius: 50%; }
 }
 
 .loading-text {
@@ -640,16 +543,8 @@ label {
 }
 
 @keyframes pulse {
-
-    0%,
-    100% {
-        opacity: 0.6;
-    }
-
-    50% {
-        opacity: 1;
-        text-shadow: 0 0 10px rgba(164, 242, 117, 0.5);
-    }
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; text-shadow: 0 0 10px rgba(164, 242, 117, 0.5); }
 }
 
 #result-state {
@@ -740,6 +635,9 @@ label {
     color: #cbd5e1;
 }
 
+/* ==========================================
+   8. DASHBOARD & ANALYTICS
+   ========================================== */
 #dashboard-panel {
     display: none;
     margin-top: 24px;
@@ -751,7 +649,6 @@ label {
     padding-bottom: 30px;
 }
 
-/* Dashboard Chart Structure */
 .chart-row {
     display: flex;
     align-items: center;
@@ -761,7 +658,6 @@ label {
 
 .chart-label {
     width: 140px;
-    /* Prevents long labels from pushing into the chart */
     text-align: right;
     padding-right: 20px;
     font-size: 0.8rem;
@@ -773,7 +669,6 @@ label {
 .chart-area {
     position: relative;
     flex: 1;
-    /* Expands to fill remaining width */
     height: 24px;
     display: flex;
     align-items: center;
@@ -795,13 +690,11 @@ label {
     z-index: 1;
 }
 
-/* Positive bars grow right from the center */
 .bar.risk {
     left: 50%;
     background-color: var(--risk-high);
 }
 
-/* Negative bars grow left from the center */
 .bar.retention {
     right: 50%;
     background-color: var(--fx-green);
@@ -826,6 +719,38 @@ label {
     color: var(--fx-green);
 }
 
+.nba-container {
+    margin-top: 32px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 4px solid var(--fx-green);
+}
+
+.nba-header {
+    font-size: 0.70rem;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.nba-text {
+    font-size: 0.90rem;
+    color: #e2e8f0;
+    line-height: 1.5;
+}
+
+.nba-text strong {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* ==========================================
+   9. TOAST NOTIFICATIONS
+   ========================================== */
 .toast-viewport {
     position: fixed;
     bottom: 0;
@@ -878,169 +803,85 @@ label {
     color: var(--fx-muted);
 }
 
+/* ==========================================
+   10. RESPONSIVE DESIGN (MOBILE/TABLET)
+   ========================================== */
 @media (max-width: 1024px) {
-    .main-panels {
-        grid-template-columns: 1fr;
-    }
-
-    .form-grid {
-        grid-template-columns: 1fr 1fr;
-    }
+    .main-panels { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 640px) {
-    .form-grid {
-        grid-template-columns: 1fr;
-    }
-
-    nav {
-        flex-direction: column;
-        gap: 16px;
-    }
+    .form-grid { grid-template-columns: 1fr; }
+    nav { flex-direction: column; gap: 16px; }
 }
 
-.bar-value {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.75rem;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.bar.risk .bar-value {
-    left: calc(100% + 8px);
-    color: var(--risk-high);
-}
-
-.bar.retention .bar-value {
-    right: calc(100% + 8px);
-    color: var(--fx-green);
-}
-
-/* Next Best Action Recommender */
-.nba-container {
-    margin-top: 32px;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border-left: 4px solid var(--fx-green);
-    /* Changes dynamically */
-}
-
-.nba-header {
-    font-size: 0.70rem;
-    font-weight: 700;
-    color: #888;
-    letter-spacing: 1.5px;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-}
-
-.nba-text {
-    font-size: 0.90rem;
-    color: #e2e8f0;
-    line-height: 1.5;
-}
-
-.nba-text strong {
-    color: #ffffff;
-    font-weight: 600;
-}
 /* ==========================================
-   UI SCALE-UP & SPACING OVERRIDES
+   11. SCALE-UP OVERRIDES (LATE ADDITIONS)
    ========================================== */
-
-/* 1. Widen the main container to eat up horizontal empty space */
-/* Note: Replace '.container' with whatever class wraps your two bottom panels */
 .container, .main-wrapper, .dashboard-layout {
     max-width: 1400px !important; 
     width: 92% !important;
-    gap: 40px !important; /* Increases space between the left and right panels */
+    gap: 40px !important; 
 }
 
-/* 2. Make the dark panels larger and roomier */
-/* Note: Replace with your actual panel classes if they differ */
-.form-panel, .dashboard-panel, .result-panel {
+.form-panel, .dashboard-panel, .result-panel, .panel {
     padding: 40px !important;
 }
 
-/* 3. Scale up the form inputs & dropdowns */
 .select-trigger, input[type="number"] {
     font-size: 1.05rem !important;
     padding: 16px 20px !important;
     min-height: 54px !important;
 }
 
-/* 4. Increase the size of the small text labels */
 label, .input-label, .section-title {
     font-size: 0.85rem !important;
     margin-bottom: 10px !important;
 }
 
-/* 5. Pull the panels up to eat the vertical empty space below the subtitle */
-/* Note: Replace with the class of your header/subtitle wrapper */
 .hero, .title-section {
     margin-bottom: 30px !important;
 }
-/* 6. Scale up the Hero / Header Section */
-#warp-title-container {
-    min-height: 280px !important; /* Gives the 3D text more vertical room to grow */
-    margin-top: 40px !important;  /* Pushes it down slightly from the top nav */
-}
 
-/* Make the subtitle text larger and more readable */
-.subtitle, .hero p, .title-section p {
-    font-size: 1.15rem !important;
-    max-width: 700px !important;
-    margin: 0 auto 50px auto !important; /* Creates a nice gap before the dark panels start */
-    line-height: 1.6 !important;
-}
 #warp-title-container {
     min-height: 280px !important; 
-    margin-top: 40px !important;
-    
-    /* NEW: Force the container to be wider */
+    margin-top: 15px !important;
     width: 100% !important;
-    max-width: 1500px !important; /* Adjust this number to control the exact text width */
+    max-width: 1500px !important; 
     margin-left: auto !important;
     margin-right: auto !important;
 }
-/* Scale up the top tag to match the new wider header */
+
+.subtitle, .hero p, .title-section p {
+    font-size: 1.15rem !important;
+    max-width: 700px !important;
+    margin: 0 auto 50px auto !important; 
+    line-height: 1.6 !important;
+}
+
 .tag {
-    font-size: 0.85rem !important;      /* Makes the text slightly larger */
-    padding: 8px 24px !important;       /* Makes the pill shape wider and taller */
-    letter-spacing: 0.15em !important;  /* Spaces out the uppercase letters */
-    margin-top: 20px !important;        /* Pushes it down from the nav bar */
-    margin-bottom: 0px !important;      /* Pulls the 3D title closer to it */
+    font-size: 0.85rem !important;      
+    padding: 8px 24px !important;       
+    letter-spacing: 0.15em !important;  
+    margin-top: 20px !important;        
+    margin-bottom: 0px !important;      
 }
 
-/* Fix the gap between the tag and the 3D title */
-#warp-title-container {
-    margin-top: 15px !important; /* Overrides the previous 40px gap */
-}
-/* ==========================================
-   NAVIGATION BAR SCALE UP
-   ========================================== */
-
-/* 1. Scale up the ChurnPred Text */
 .nav-brand {
-    font-size: 1.5rem !important; /* Increased from 1.125rem */
-    gap: 12px !important;         /* Slightly more space between icon and text */
+    font-size: 1.5rem !important; 
+    gap: 12px !important;         
 }
 
-/* 2. Scale up the Star Logo Box */
 .nav-icon {
-    width: 44px !important;       /* Increased from 36px */
+    width: 44px !important;       
     height: 44px !important;
-    font-size: 1.25rem !important;/* Makes the star itself larger */
+    font-size: 1.25rem !important;
     border-radius: 14px !important;
 }
 
-/* 3. Scale up the Top Right Reset Button */
 .nav-actions .btn-outline {
-    font-size: 1rem !important;    /* Increased from 0.875rem */
-    padding: 12px 28px !important; /* Makes the button taller and wider */
-    border-width: 1.5px !important;/* Slightly thicker border for presence */
+    font-size: 1rem !important;    
+    padding: 12px 28px !important; 
+    border-width: 1.5px !important;
 }

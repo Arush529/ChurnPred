@@ -1,16 +1,26 @@
 // ==========================================
 // 1. 3D WEBGL TITLE ENGINE
 // ==========================================
+// Renders the interactive "Telco Customer Churn Predictor" liquid text effect using the OGL library.
 window.addEventListener('load', () => {
     if (window.ogl) {
         const { Renderer, Program, Mesh, Triangle, Texture } = window.ogl;
+        
+        // WebGL Shaders (Handles the mathematical distortion, ripple, and refraction of the text)
         const vertex = `#version 300 es\nin vec2 position;\nin vec2 uv;\nout vec2 vUv;\nvoid main() { vUv = uv; gl_Position = vec4(position, 0.0, 1.0); }`;
         const fragment = `#version 300 es\nprecision highp float;\nuniform sampler2D uTextTexture;\nuniform vec2 uResolution;\nuniform vec2 uPointer;\nuniform float uPointerActive;\nuniform float uTime;\nuniform float uWarpStrength;\nuniform float uWarpScale;\nuniform float uSpeed;\nuniform float uPointerInfluence;\nuniform float uPointerStrength;\nuniform float uRefraction;\nuniform float uRipple;\nuniform float uMotion;\nin vec2 vUv;\nout vec4 fragColor;\nfloat hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }\nfloat noise(vec2 p) {\nvec2 i = floor(p); vec2 f = fract(p); vec2 u = f * f * (3.0 - 2.0 * f);\nfloat a = hash(i); float b = hash(i + vec2(1.0, 0.0)); float c = hash(i + vec2(0.0, 1.0)); float d = hash(i + vec2(1.0, 1.0));\nreturn mix(mix(a, b, u.x), mix(c, d, u.x), u.y);\n}\nfloat fbm(vec2 p) {\nfloat value = 0.0; float amplitude = 0.5;\nfor (int i = 0; i < 4; i++) { value += amplitude * noise(p); p *= 2.02; amplitude *= 0.5; }\nreturn value;\n}\nvec4 sampleText(vec2 uv) {\nif (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) return vec4(0.0);\nreturn texture(uTextTexture, uv);\n}\nvoid main() {\nvec2 uv = vUv;\nfloat aspect = uResolution.x / max(uResolution.y, 1.0);\nfloat time = uTime * uSpeed;\nfloat scale = max(uWarpScale, 0.001);\nvec2 drift = vec2(time * 0.055, -time * 0.045);\nfloat n1 = fbm(uv * scale * 3.1 + drift);\nfloat n2 = fbm((uv + 19.17) * scale * 3.4 - drift.yx);\nvec2 ambient = (vec2(n1, n2) - 0.5) * uWarpStrength * 0.045 * uMotion;\nvec2 pointerDelta = uv - uPointer;\nvec2 aspectDelta = vec2(pointerDelta.x * aspect, pointerDelta.y);\nfloat dist = length(aspectDelta);\nfloat radius = max(uPointerInfluence, 0.001);\nfloat t = clamp(dist / radius, 0.0, 1.0);\nfloat lens = smoothstep(radius, 0.0, dist) * uPointerActive;\nfloat bulge = t * (1.0 - t) * (1.0 - t) * 6.75 * uPointerActive;\nvec2 dir = dist > 0.0001 ? vec2(aspectDelta.x / aspect, aspectDelta.y) / dist : vec2(0.0);\nfloat rippleWave = sin(dist * 28.0 - time * 4.2) * 0.5 + 0.5;\nfloat rippleRing = (rippleWave - 0.5) * uRipple;\nvec2 pointerWarp = -dir * bulge * uPointerStrength * 0.045;\npointerWarp += dir * rippleRing * bulge * uPointerStrength * 0.016;\nvec2 displaced = uv + ambient + pointerWarp;\nvec2 splitDir = ambient + pointerWarp;\nfloat splitLen = length(splitDir);\nsplitDir = splitLen > 0.00001 ? splitDir / splitLen : vec2(0.7071, 0.7071);\nvec2 split = splitDir * uRefraction * 0.16 * (0.35 + lens * 1.65);\nvec4 base = sampleText(displaced);\nfloat r = sampleText(displaced + split).r;\nfloat g = base.g;\nfloat b = sampleText(displaced - split).b;\nfloat a = max(max(sampleText(displaced + split).a, base.a), sampleText(displaced - split).a);\nvec3 color = vec3(r, g, b) + lens * base.a * 0.055;\nfragColor = vec4(color, a);\n}`;
+        
         class VanillaWarpText {
             constructor(containerId) {
                 this.container = document.getElementById(containerId);
                 if (!this.container) return;
-                this.props = { text: "Telco Customer\nChurn Predictor", color: "#ffffff", warpStrength: 0.08, warpScale: 1.7, speed: 0.55, pointerInfluence: 0.42, pointerStrength: 0.38, refraction: 0.018, ripple: true, fontWeight: 800, fontFamily: '"Inter", ui-sans-serif, system-ui, sans-serif', letterSpacing: -0.04, lineHeight: 0.95 };
+                
+                // EDIT: Removed the \n here to force the text into one long horizontal line
+                this.props = { 
+                    text: "Telco Customer Churn Predictor", 
+                    color: "#ffffff", 
+                    warpStrength: 0.08, warpScale: 1.7, speed: 0.55, pointerInfluence: 0.42, pointerStrength: 0.38, refraction: 0.018, ripple: true, fontWeight: 800, fontFamily: '"Inter", ui-sans-serif, system-ui, sans-serif', letterSpacing: -0.04, lineHeight: 0.95 
+                };
                 this.pointer = { x: 0.5, y: 0.5, tx: 0.5, ty: 0.5, active: 0, activeTarget: 0 };
                 this.startTime = performance.now();
                 this.raf = 0;
@@ -57,6 +67,7 @@ window.addEventListener('load', () => {
         }
         new VanillaWarpText('warp-title-container');
     } else {
+        // Fallback if OGL fails to load
         document.querySelector('#warp-title-container h1').style.position = 'relative'; document.querySelector('#warp-title-container h1').style.width = 'auto'; document.querySelector('#warp-title-container h1').style.height = 'auto'; document.querySelector('#warp-title-container h1').style.clip = 'auto';
     }
 });
@@ -65,6 +76,7 @@ window.addEventListener('load', () => {
 // ==========================================
 // 2. CLICKSPARK GLOBAL ENGINE
 // ==========================================
+// Renders the green explosion particle effect whenever the user clicks anywhere on the body.
 window.addEventListener('load', () => {
     class ClickSpark {
         constructor(options = {}) {
@@ -115,7 +127,8 @@ window.addEventListener('load', () => {
 // ==========================================
 // 3. PURE CSS SPECULAR HOVER ENGINE
 // ==========================================
-// Uses event delegation so dynamically created wrappers (like custom selects) get the hover tracking!
+// Tracks mouse movement across the document and dynamically updates the --mouse-x and --mouse-y CSS variables.
+// This allows the radial gradient borders on the form inputs to "follow" the cursor.
 document.addEventListener('mousemove', (e) => {
     const wrapper = e.target.closest('.css-specular-wrapper');
     if (wrapper) {
@@ -127,12 +140,12 @@ document.addEventListener('mousemove', (e) => {
 
 
 // ==========================================
-// 4. CORE APP LOGIC & ML INTEGRATION
+// 4. CUSTOM UI BUILDER (DROPDOWNS & INPUTS)
 // ==========================================
+// Finds all standard HTML <select> tags and rebuilds them into custom styled DIVs with SVG icons.
 document.addEventListener('DOMContentLoaded', () => {
     const SVGs = { chevron: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`, check: `<svg class="check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>` };
     
-    // Build and wrap dropdown selects
     document.querySelectorAll('select').forEach(select => {
         select.style.display = 'none';
         const wrapper = document.createElement('div'); wrapper.className = 'custom-select';
@@ -164,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.addEventListener('click', () => { document.querySelectorAll('.custom-select').forEach(cs => cs.classList.remove('open')); });
     
-    // Wrap standard number inputs
     document.querySelectorAll('input[type="number"]').forEach(input => {
         const wrapper = document.createElement('div');
         wrapper.className = 'css-specular-wrapper';
@@ -173,7 +185,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// App State References
+
+// ==========================================
+// 5. GLOBAL STATE & UTILITIES
+// ==========================================
 const form = document.getElementById('prediction-form');
 const emptyState = document.getElementById('empty-state');
 const loadingState = document.getElementById('loading-state');
@@ -186,24 +201,36 @@ const gaugePath = document.getElementById('gauge-path');
 const riskStatusText = document.getElementById('risk-status-text');
 const factorsList = document.getElementById('factors-list');
 const barChartContainer = document.getElementById('bar-chart-container');
-const RISK_STYLES = { "High Risk": { hex: "#f02e65", glow: "rgba(240,46,101,0.5)" }, "Medium Risk": { hex: "#ff8a00", glow: "rgba(255,138,0,0.5)" }, "Low Risk": { hex: "#a4f275", glow: "rgba(164,242,117,0.5)" } };
 
+// Defines the colors based on prediction thresholds
+const RISK_STYLES = { 
+    "High Risk": { hex: "#f02e65", glow: "rgba(240,46,101,0.5)" }, 
+    "Medium Risk": { hex: "#ff8a00", glow: "rgba(255,138,0,0.5)" }, 
+    "Low Risk": { hex: "#a4f275", glow: "rgba(164,242,117,0.5)" } 
+};
+
+// Controls the sliding popup notifications in the bottom right corner
 function toast({ title, description, variant = 'default' }) {
     const el = document.createElement('div'); el.className = `toast ${variant === 'destructive' ? 'destructive' : ''}`;
     el.innerHTML = `<div class="toast-title">${title}</div>${description ? `<div class="toast-desc">${description}</div>` : ''}`; toastViewport.appendChild(el);
     requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show'))); setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 4000);
 }
 
-// Prediction Logic
+
+// ==========================================
+// 6. XGBOOST PREDICTION LOGIC
+// ==========================================
 function runPrediction(e) {
     if(e) e.preventDefault();
     
+    // Trigger the morphing load state
     submitBtn.querySelector('.text').textContent = 'Predicting...'; submitBtn.disabled = true;
     emptyState.style.display = 'none'; resultState.style.display = 'none'; dashboardPanel.style.display = 'none'; loadingState.style.display = 'flex';
     
+    // Fake timeout to allow the loading animation to play before calculating
     setTimeout(() => {
         try {
-            // 1. Capture Raw Form Values
+            // A. Capture Form Inputs
             const gender = document.getElementById('gender').value;
             const senior = document.getElementById('SeniorCitizen').value;
             const partner = document.getElementById('Partner').value;
@@ -225,67 +252,39 @@ function runPrediction(e) {
             const contract = document.getElementById('Contract').value;
             const payment = document.getElementById('PaymentMethod').value;
 
-            // 2. Feature Engineering
+            // B. Feature Engineering (Creates new data points based on inputs)
             const avgSpend = tc / (tenure === 0 ? 1 : tenure);
             const isNew = tenure <= 3 ? 1 : 0;
             const hasMulti = (security === 'Yes' ? 1 : 0) + (backup === 'Yes' ? 1 : 0) + (protection === 'Yes' ? 1 : 0) + (support === 'Yes' ? 1 : 0);
 
-            // 3. Construct Feature Array
+            // C. Build the 33-Item Array expected by churn_model.js
             const features = [
-                gender === 'Male' ? 1 : 0,
-                senior === 'Yes' ? 1 : 0,
-                partner === 'Yes' ? 1 : 0,
-                deps === 'Yes' ? 1 : 0,
-                tenure,
-                phone === 'Yes' ? 1 : 0,
-                paperless === 'Yes' ? 1 : 0,
-                mc,
-                tc,
-                avgSpend,
-                isNew,
-                hasMulti,
-                multiLines === 'No phone service' ? 1 : 0,
-                multiLines === 'Yes' ? 1 : 0,
-                internet === 'Fiber optic' ? 1 : 0,
-                internet === 'No' ? 1 : 0,
-                security === 'No internet service' ? 1 : 0,
-                security === 'Yes' ? 1 : 0,
-                backup === 'No internet service' ? 1 : 0,
-                backup === 'Yes' ? 1 : 0,
-                protection === 'No internet service' ? 1 : 0,
-                protection === 'Yes' ? 1 : 0,
-                support === 'No internet service' ? 1 : 0,
-                support === 'Yes' ? 1 : 0,
-                tv === 'No internet service' ? 1 : 0,
-                tv === 'Yes' ? 1 : 0,
-                movies === 'No internet service' ? 1 : 0,
-                movies === 'Yes' ? 1 : 0,
-                contract === 'One year' ? 1 : 0,
-                contract === 'Two year' ? 1 : 0,
-                payment === 'Credit card (automatic)' ? 1 : 0,
-                payment === 'Electronic check' ? 1 : 0,
-                payment === 'Mailed check' ? 1 : 0
+                gender === 'Male' ? 1 : 0, senior === 'Yes' ? 1 : 0, partner === 'Yes' ? 1 : 0, deps === 'Yes' ? 1 : 0, tenure, phone === 'Yes' ? 1 : 0, paperless === 'Yes' ? 1 : 0, mc, tc, avgSpend, isNew, hasMulti,
+                multiLines === 'No phone service' ? 1 : 0, multiLines === 'Yes' ? 1 : 0, internet === 'Fiber optic' ? 1 : 0, internet === 'No' ? 1 : 0,
+                security === 'No internet service' ? 1 : 0, security === 'Yes' ? 1 : 0, backup === 'No internet service' ? 1 : 0, backup === 'Yes' ? 1 : 0,
+                protection === 'No internet service' ? 1 : 0, protection === 'Yes' ? 1 : 0, support === 'No internet service' ? 1 : 0, support === 'Yes' ? 1 : 0,
+                tv === 'No internet service' ? 1 : 0, tv === 'Yes' ? 1 : 0, movies === 'No internet service' ? 1 : 0, movies === 'Yes' ? 1 : 0,
+                contract === 'One year' ? 1 : 0, contract === 'Two year' ? 1 : 0,
+                payment === 'Credit card (automatic)' ? 1 : 0, payment === 'Electronic check' ? 1 : 0, payment === 'Mailed check' ? 1 : 0
             ];
 
-            // 4. Run Model & Sigmoid Conversion
+            // D. Run Model & Sigmoid Conversion
             if (typeof scoreProfile !== "function") throw new Error("Model file not loaded. Make sure churn_model.js is included.");
             
             let rawScore = scoreProfile(features);
-            
-            // Extract Class 1 margin if m2cgen outputs an array
-            if (Array.isArray(rawScore)) {
-                rawScore = rawScore.length > 1 ? rawScore[1] : rawScore[0];
-            }
+            if (Array.isArray(rawScore)) { rawScore = rawScore.length > 1 ? rawScore[1] : rawScore[0]; }
             
             const probability = 1 / (1 + Math.exp(-rawScore));
             const pct = Math.round(probability * 100);
 
-            // 5. Business Logic Thresholds
+            // E. Categorize Risk
             let riskLevel = "Low Risk";
             if (probability >= 0.60) riskLevel = "High Risk";
             else if (probability >= 0.35) riskLevel = "Medium Risk";
 
-            // UX Feature weighting for the UI dashboard (5 factors)
+            // ==========================================
+            // 7. DASHBOARD & NBA RENDER LOGIC
+            // ==========================================
             const heuristicFactors = [
                 { feature: "Contract", value: contract, weight: contract === 'Month-to-month' ? 1.5 : -1.2 },
                 { feature: "Tech Services", value: `${hasMulti}/4 Ecosystem`, weight: hasMulti === 0 ? 0.9 : (hasMulti * -0.5) },
@@ -294,26 +293,27 @@ function runPrediction(e) {
                 { feature: "Payment Method", value: payment, weight: payment === 'Electronic check' ? 0.6 : -0.4 }
             ];
 
-            // 6. State Update
             const style = RISK_STYLES[riskLevel];
             const offset = (2 * Math.PI * 70) * (1 - pct / 100);
             
+            // Render SVG Gauge
             churnPercentDisplay.textContent = `${pct}%`; 
             churnPercentDisplay.style.color = style.hex; 
             churnPercentDisplay.style.textShadow = `0 0 20px ${style.glow}`;
-            
             gaugePath.style.stroke = style.hex; 
             gaugePath.style.filter = `drop-shadow(0 0 10px ${style.glow})`; 
             setTimeout(() => { gaugePath.style.strokeDashoffset = offset; }, 50);
             
+            // Render Risk Text
             riskStatusText.textContent = `${riskLevel} of churning`; 
             riskStatusText.style.color = style.hex; 
             riskStatusText.style.textShadow = `0 0 16px ${style.glow}`;
             
+            // Render Factors List (Right Panel)
             factorsList.innerHTML = heuristicFactors.map(f => `<div class="factor-item"><span>${f.feature}: ${f.value}</span><span style="color: ${f.weight > 0 ? 'var(--risk-high)' : 'var(--fx-green)'}">${f.weight > 0 ? '↗ risk' : '↘ retention'}</span></div>`).join('');
             
+            // Render Horizontal Bar Chart (Bottom Panel)
             const maxAbs = Math.max(...heuristicFactors.map(f => Math.abs(f.weight)));
-            
             barChartContainer.innerHTML = '<div class="zero-line"></div>' + heuristicFactors.map(f => {
                 const isRisk = f.weight > 0;
                 const width = (Math.abs(f.weight) / maxAbs) * 40; 
@@ -329,7 +329,7 @@ function runPrediction(e) {
                 </div>`;
             }).join('');
 
-            // 7. Next Best Action (NBA) Logic
+            // Render Next Best Action (NBA) Recommendation
             const nbaContainer = document.getElementById('nba-container');
             const nbaText = document.getElementById('nba-text');
             const topRisk = [...heuristicFactors].sort((a, b) => b.weight - a.weight)[0];
@@ -341,27 +341,17 @@ function runPrediction(e) {
                 nbaContainer.style.borderLeftColor = "var(--risk-high)";
                 
                 switch (topRisk.feature) {
-                    case "Contract":
-                        nbaText.innerHTML = "<strong>Retention Offer:</strong> High flight risk due to month-to-month status. Offer a 10% monthly discount to lock into a 1-Year Contract.";
-                        break;
-                    case "Tech Services":
-                        nbaText.innerHTML = "<strong>Ecosystem Upsell:</strong> Weak service integration. Offer a free 3-month trial of Premium Tech Support or Cloud Backup.";
-                        break;
-                    case "Payment Method":
-                        nbaText.innerHTML = "<strong>Billing Shift:</strong> Manual check payments increase churn friction. Offer a one-time $10 statement credit to enroll in AutoPay.";
-                        break;
-                    case "Internet":
-                        nbaText.innerHTML = "<strong>Price Check:</strong> Fiber optic users are highly price-sensitive to competitors. Check for local outages and offer a $15 loyalty credit.";
-                        break;
-                    case "Tenure":
-                        nbaText.innerHTML = "<strong>Onboarding Risk:</strong> Customer is still in the critical early phase. Trigger a personalized check-in call from Customer Success.";
-                        break;
-                    default:
-                        nbaText.innerHTML = "<strong>Direct Outreach:</strong> Flag account for immediate manual review by the retention team.";
+                    case "Contract": nbaText.innerHTML = "<strong>Retention Offer:</strong> High flight risk due to month-to-month status. Offer a 10% monthly discount to lock into a 1-Year Contract."; break;
+                    case "Tech Services": nbaText.innerHTML = "<strong>Ecosystem Upsell:</strong> Weak service integration. Offer a free 3-month trial of Premium Tech Support or Cloud Backup."; break;
+                    case "Payment Method": nbaText.innerHTML = "<strong>Billing Shift:</strong> Manual check payments increase churn friction. Offer a one-time $10 statement credit to enroll in AutoPay."; break;
+                    case "Internet": nbaText.innerHTML = "<strong>Price Check:</strong> Fiber optic users are highly price-sensitive to competitors. Check for local outages and offer a $15 loyalty credit."; break;
+                    case "Tenure": nbaText.innerHTML = "<strong>Onboarding Risk:</strong> Customer is still in the critical early phase. Trigger a personalized check-in call from Customer Success."; break;
+                    default: nbaText.innerHTML = "<strong>Direct Outreach:</strong> Flag account for immediate manual review by the retention team.";
                 }
             }
             nbaContainer.style.display = "block";
             
+            // Switch UI States
             loadingState.style.display = 'none'; 
             resultState.style.display = 'flex'; 
             dashboardPanel.style.display = 'block';
@@ -380,7 +370,9 @@ function runPrediction(e) {
 
 form.addEventListener('submit', runPrediction);
 
-// Global UI Actions
+// ==========================================
+// 8. APP RESET LOGIC
+// ==========================================
 document.getElementById('reset-btn').addEventListener('click', () => { 
     form.reset(); 
     document.querySelectorAll('.custom-select').forEach(wrapper => { 
