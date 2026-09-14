@@ -1,2 +1,38 @@
-data/*.csv
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production builds
+dist/
+dist-ssr/
+*.local
+
+# Environment variables (SECURITY: Never commit secret keys)
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Editor & OS files
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Private dataset uploads
+data/*.csv
+archive/legacy_vanilla_site/_legacy_backup/
+
+# Temporary scratch directory
+scratch/

@@ -1,0 +1,42 @@
+[
+  {
+    "_id": "user_1789236576116_34pomj",
+    "name": "Demo Analyst",
+    "email": "demo@churnpred.io",
+    "passwordHash": "$2b$10$N0NKbJnXEnXNwkO00ibjoe9GOzQ3SqqUWy33PB3QkeKWvQXCoqPzC",
+    "company": "Acme Telecommunications",
+    "role": "Lead ML Retention Strategist",
+    "createdAt": "2026-09-12T18:09:36.116Z",
+    "lastLogin": "2026-09-12T18:10:56.760Z"
+  },
+  {
+    "_id": "user_1789236587129_k6fbs8",
+    "name": "Test User",
+    "email": "test@enterprise.com",
+    "passwordHash": "$2b$10$GXTurboEv4I1bOZZ47wu1eAzS1liKLBZh0oPrZ6ceqncusJ/MyMg2",
+    "company": "Acme Corp",
+    "role": "Retention Analyst",
+    "createdAt": "2026-09-12T18:09:47.129Z",
+    "lastLogin": "2026-09-12T18:09:56.378Z"
+  },
+  {
+    "_id": "user_1789236664591_8icg4g",
+    "name": "Elena Rostova",
+    "email": "elena.test1789236664517@enterprise.com",
+    "passwordHash": "$2b$10$cVuKgnq/VgtGxN8AuKMKYOGji8SIdSbnSDDwt6w4VmaartJ1ee3gy",
+    "company": "Hyperion Telco",
+    "role": "Retention Analyst",
+    "createdAt": "2026-09-12T18:11:04.591Z",
+    "lastLogin": "2026-09-12T18:11:04.591Z"
+  },
+  {
+    "_id": "user_1789359732951_asjr7s",
+    "name": "Gowthsm",
+    "email": "gowthamraghuveer@hotmail.com",
+    "passwordHash": "$2b$10$WXz7/lrFw/5NK6yMHV6UQet1Qs7CuZKQwY.uxO43BfeoVzLuCRRxC",
+    "company": "Raghuveer Entreprises",
+    "role": "Retention Analyst",
+    "createdAt": "2026-09-14T04:22:12.952Z",
+    "lastLogin": "2026-09-14T04:22:12.952Z"
+  }
+]

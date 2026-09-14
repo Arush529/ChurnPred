@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Profile Predictor &bull; Telco Churn Intelligence</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- External Libraries & Models -->
+    <script src="https://cdn.jsdelivr.net/npm/ogl/dist/ogl.umd.js" defer></script>
+    <script src="js/churn_model.js"></script>
+
+    <!-- Local Assets -->
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/main.js" defer></script>
+</head>
+
+<body>
+    <!-- 3D Liquid Canvas Background -->
+    <canvas id="liquid-bg"></canvas>
+
+    <!-- NAVIGATION BAR -->
+    <nav>
+        <a href="index.html" class="nav-brand" style="text-decoration: none; color: #ffffff;" title="Back to Overview">
+            <div class="nav-icon">✦</div>
+            <span style="color: #ffffff;">Churn<span style="color: var(--fx-green)">Pred</span></span>
+        </a>
+
+        <!-- Mode View Switcher -->
+        <div class="view-switcher" id="main-view-switcher">
+            <a href="single.html" class="view-tab active" style="text-decoration: none;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Single Profile
+            </a>
+            <a href="batch.html" class="view-tab" style="text-decoration: none;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                Batch CSV Scoring
+            </a>
+        </div>
+
+        <div class="nav-actions">
+            <button class="btn-outline" id="nav-reset-btn">Reset</button>
+            <a href="index.html" class="btn-outline" style="text-decoration: none;">Overview</a>
+        </div>
+    </nav>
+
+    <!-- WORKSPACE APPLICATION VIEW -->
+    <div id="workspace-view" style="width: 100%;">
+        <!-- Top Workspace Bar -->
+        <div class="workspace-breadcrumb">
+            <a href="index.html" class="back-home-btn" id="back-home-btn" style="text-decoration: none;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                <span>Back to Overview</span>
+            </a>
+        </div>
+
+        <!-- MAIN APPLICATION LAYOUT -->
+        <div class="container">
+            
+            <!-- SINGLE CUSTOMER EVALUATION VIEW -->
+            <div id="single-view" style="display: block; width: 100%; margin-top: 16px;">
+                <!-- Top Row: Input Form & Results Gauge -->
+                <div class="main-panels">
+                
+                    <!-- LEFT PANEL: USER INPUT FORM -->
+                    <form class="panel" id="prediction-form">
+                        
+                        <!-- Quick Persona Presets -->
+                        <div class="preset-container">
+                            <span class="preset-label">⚡ Quick Presets:</span>
+                            <div class="preset-chips">
+                                <button type="button" class="preset-btn" data-preset="risk">🔥 High Flight-Risk</button>
+                                <button type="button" class="preset-btn" data-preset="loyal">🛡️ Loyal Veteran</button>
+                                <button type="button" class="preset-btn" data-preset="borderline">⚖️ Borderline Case</button>
+                            </div>
+                        </div>
+
+                        <!-- Demographics Category -->
+                        <div class="section-title">Demographics</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Gender</label><select id="gender"><option>Male</option><option>Female</option></select></div>
+                            <div class="form-group"><label>Senior Citizen</label><select id="SeniorCitizen"><option>No</option><option>Yes</option></select></div>
+                            <div class="form-group"><label>Partner</label><select id="Partner"><option>No</option><option>Yes</option></select></div>
+                            <div class="form-group"><label>Dependents</label><select id="Dependents"><option>No</option><option>Yes</option></select></div>
+                            <div class="form-group"><label>Tenure (months)</label><input type="number" id="tenure" value="12" min="0" max="72"></div>
+                        </div>
+
+                        <!-- Services Subscribed Category -->
+                        <div class="section-title">Services Subscribed</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Phone Service</label><select id="PhoneService"><option>Yes</option><option>No</option></select></div>
+                            <div class="form-group"><label>Multiple Lines</label><select id="MultipleLines"><option>No</option><option>Yes</option><option>No phone service</option></select></div>
+                            <div class="form-group"><label>Internet Service</label><select id="InternetService"><option>Fiber optic</option><option>DSL</option><option>No</option></select></div>
+                            <div class="form-group"><label>Online Security</label><select id="OnlineSecurity"><option>No</option><option>Yes</option><option>No internet service</option></select></div>
+                            <div class="form-group"><label>Online Backup</label><select id="OnlineBackup"><option>No</option><option>Yes</option><option>No internet service</option></select></div>
+                            <div class="form-group"><label>Device Protection</label><select id="DeviceProtection"><option>No</option><option>Yes</option><option>No internet service</option></select></div>
+                            <div class="form-group"><label>Tech Support</label><select id="TechSupport"><option>No</option><option>Yes</option><option>No internet service</option></select></div>
+                            <div class="form-group"><label>Streaming TV</label><select id="StreamingTV"><option>No</option><option>Yes</option><option>No internet service</option></select></div>
+                            <div class="form-group"><label>Streaming Movies</label><select id="StreamingMovies"><option>No</option><option>Yes</option><option>No internet service</option></select></div>
+                        </div>
+
+                        <!-- Contract & Billing Category -->
+                        <div class="section-title">Contract &amp; Billing</div>
+                        <div class="form-grid">
+                            <div class="form-group"><label>Contract</label><select id="Contract"><option>Month-to-month</option><option>One year</option><option>Two year</option></select></div>
+                            <div class="form-group"><label>Paperless Billing</label><select id="PaperlessBilling"><option>Yes</option><option>No</option></select></div>
+                            <div class="form-group"><label>Payment Method</label><select id="PaymentMethod"><option>Electronic check</option><option>Mailed check</option><option>Bank transfer (automatic)</option><option>Credit card (automatic)</option></select></div>
+                            <div class="form-group"><label>Monthly Charges ($)</label><input type="number" id="MonthlyCharges" value="70.35" step="0.01" min="0"></div>
+                            <div class="form-group"><label>Total Charges ($)</label><input type="number" id="TotalCharges" value="844.20" step="0.01" min="0"></div>
+                        </div>
+
+                        <!-- Form Action Buttons -->
+                        <div class="actions" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 0.82rem; color: var(--fx-muted); display: inline-flex; align-items: center; gap: 8px;">
+                                <span class="pulse-dot" style="width: 6px; height: 6px;"></span>
+                                <span>Real-time engine &mdash; scores live on every input</span>
+                            </span>
+                            <button class="btn-outline" type="button" id="reset-btn">Reset All Fields</button>
+                        </div>
+                    </form>
+
+                    <!-- RIGHT PANEL: DYNAMIC RESULTS -->
+                    <div class="panel results-panel">
+                        <!-- Scoring Results Output -->
+                        <div id="result-state" style="display: flex; width: 100%; flex-direction: column; align-items: center;">
+                            <div class="gauge-container circular-chart">
+                                <svg class="svg-gauge" viewBox="0 0 160 160" width="180" height="180">
+                                    <circle class="gauge-bg" cx="80" cy="80" r="70"></circle>
+                                    <circle class="gauge-fill gauge-progress" id="gauge-path" cx="80" cy="80" r="70" stroke-dasharray="439.82" stroke-dashoffset="439.82"></circle>
+                                </svg>
+                                <div class="gauge-text">
+                                    <div class="churn-percent" id="churn-percent">0%</div>
+                                    <div class="gauge-label churn-label">CHURN RISK</div>
+                                </div>
+                            </div>
+                            <div class="risk-badge" id="risk-badge">CALCULATING...</div>
+                            <div class="risk-status" id="risk-status-text" style="text-align: center; margin: 8px 0 14px; font-weight: 600; font-family: var(--font-headline); font-size: 0.95rem;"></div>
+
+                            <!-- Financial Impact Module: Live ARR at Risk -->
+                            <div class="revenue-risk-card" id="revenue-risk-card">
+                                <div class="revenue-risk-header">
+                                    <span class="rev-icon">💰</span>
+                                    <span class="rev-title">ANNUAL VALUE AT RISK</span>
+                                </div>
+                                <div class="revenue-risk-val" id="revenue-loss">$0.00 / yr</div>
+                                <div class="revenue-risk-sub" id="revenue-calc">Based on current monthly billing of $0.00</div>
+                            </div>
+
+                            <!-- Key Drivers Mini-list in Results Panel -->
+                            <div class="top-factors" id="top-factors-container" style="width: 100%; margin-top: 14px;">
+                                <div class="top-factors-title" style="font-family: var(--font-mono); font-size: 0.72rem; color: var(--fx-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;">Top Risk Drivers:</div>
+                                <div id="factors-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTTOM ROW: MODEL ATTRIBUTION DASHBOARD -->
+                <div class="panel dashboard-panel" id="dashboard-panel" style="display: block; margin-top: 24px; padding: 32px 36px;">
+                    
+                    <div class="section-title">Dashboard Summary &mdash; Top Contributing Factors</div>
+                    <p style="font-size:0.75rem; color:var(--fx-muted); margin-bottom: 24px;">
+                        Positive values push toward churn, negative values push toward retention.
+                    </p>
+                    <div class="bar-chart-container" id="bar-chart-container">
+                        <div class="zero-line"></div>
+                    </div>
+
+                    <!-- Next Best Action (NBA) Recommendation Engine -->
+                    <div id="nba-container" class="nba-container" style="display: none;">
+                        <div class="nba-header">⚡ NEXT BEST ACTION</div>
+                        <div id="nba-text" class="nba-text"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION VIEWPORT -->
+    <div class="toast-viewport" id="toast-viewport"></div>
+
+</body>
+</html>
