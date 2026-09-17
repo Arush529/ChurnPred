@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { generateDiagnosticResponse } from '../../lib/churnKnowledgeBase';
 
 const STARTER_PROMPTS = [
   "🔍 How does the XGBoost model calculate risk?",
@@ -49,36 +50,37 @@ export default function ChurnAdvisorChat({
     setInput('');
     setIsLoading(true);
 
+    const chatContext = {
+      page: currentPage,
+      profile: activeProfile,
+      prob: currentProb,
+      inspectedId,
+      cohortStats
+    };
+
     try {
-      const res = await fetch('http://localhost:5000/api/chat', {
+      const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: query,
           history: newMessages.slice(-5),
-          context: {
-            page: currentPage,
-            profile: activeProfile,
-            prob: currentProb,
-            inspectedId,
-            cohortStats
-          }
+          context: chatContext
         })
       });
 
-      if (!res.ok) throw new Error(`Server returned status ${res.status}`);
+      const contentType = res.headers.get('content-type') || '';
+      if (!res.ok || !contentType.includes('application/json')) {
+        throw new Error(`Non-JSON or status ${res.status}`);
+      }
+
       const data = await res.json();
       setMessages(prev => [...prev, { sender: 'ai', text: data.reply || 'No response generated.' }]);
     } catch (err) {
-      console.warn('Backend chat failed, falling back to local client responder:', err);
-      // Client-side fallback if server fails
-      setMessages(prev => [
-        ...prev, 
-        { 
-          sender: 'ai', 
-          text: "### ✦ Churn Intelligence Response\nOur compiled **XGBoost Decision Tree Ensemble** evaluates 19 Telco customer attributes (Contract, MonthlyCharges, tenure, ecosystem bundles, and payment friction) to project calibrated churn probability." 
-        }
-      ]);
+      console.warn('Backend chat offline, using client-side diagnostic knowledge engine:', err);
+      // Client-side intelligent fallback using domain knowledge engine
+      const diagnosticReply = generateDiagnosticResponse(query, chatContext);
+      setMessages(prev => [...prev, { sender: 'ai', text: diagnosticReply }]);
     } finally {
       setIsLoading(false);
     }

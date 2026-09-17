@@ -163,6 +163,34 @@ export default function AuthModal({ isOpen, onClose, onSuccess, initialMode = 'l
             </div>
           )}
 
+          {/* 1-Click Quick Demo Sign-In */}
+          {mode === 'login' && (
+            <button
+              type="button"
+              onClick={async () => {
+                setError(null);
+                setLoading(true);
+                try {
+                  const user = await loginUser({ email: 'demo@churnpred.io', password: 'password123' });
+                  onSuccess(user);
+                } catch (err) {
+                  setError(err.message || 'Demo login failed');
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              disabled={loading}
+              className="w-full py-2.5 px-3 mb-4 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer hover:bg-white/5"
+              style={{
+                background: 'rgba(0, 242, 152, 0.08)',
+                border: '1px dashed rgba(0, 242, 152, 0.45)',
+                color: 'var(--fx-green)'
+              }}
+            >
+              <span>⚡ 1-Click Demo Analyst Access (demo@churnpred.io)</span>
+            </button>
+          )}
+
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === 'register' && (
