@@ -28,6 +28,27 @@ export async function seedDemoUser() {
   }
 }
 
+async function parseApiResponse(res) {
+  const contentType = res.headers.get('content-type') || '';
+  if (contentType.includes('application/json')) {
+    try {
+      return await res.json();
+    } catch (e) {
+      // Fall through
+    }
+  }
+
+  // Handle non-JSON response (e.g. Vite proxy 504 / gateway timeout when backend is offline)
+  const text = await res.text();
+  if (!res.ok) {
+    if (res.status === 502 || res.status === 503 || res.status === 504 || text.includes('The page c') || text.includes('ECONNREFUSED')) {
+      throw new Error('Backend server is offline on port 5000. Please start both frontend and backend by running "npm run dev:all" in your terminal.');
+    }
+    throw new Error(`Server returned status ${res.status}: ${res.statusText || 'Non-JSON response'}`);
+  }
+  return { text };
+}
+
 /**
  * Register a new user in MongoDB via Backend API
  */
@@ -36,18 +57,23 @@ export async function registerUser({ name, email, password, company = 'Enterpris
   if (!email || !email.includes('@')) throw new Error('A valid email address is required.');
   if (!password || password.length < 6) throw new Error('Password must be at least 6 characters.');
 
-  const res = await fetch('/api/auth/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name: name.trim(),
-      email: email.trim().toLowerCase(),
-      password,
-      company: company.trim() || 'Enterprise Org'
-    })
-  });
+  let res;
+  try {
+    res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        password,
+        company: company.trim() || 'Enterprise Org'
+      })
+    });
+  } catch (netErr) {
+    throw new Error('Cannot connect to backend server. Make sure it is running via "npm run dev:all".');
+  }
 
-  const data = await res.json();
+  const data = await parseApiResponse(res);
   if (!res.ok) {
     throw new Error(data.error || 'Failed to create user account.');
   }
@@ -67,16 +93,21 @@ export async function registerUser({ name, email, password, company = 'Enterpris
 export async function loginUser({ email, password }) {
   if (!email || !password) throw new Error('Please enter both email and password.');
 
-  const res = await fetch('/api/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      email: email.trim().toLowerCase(),
-      password
-    })
-  });
+  let res;
+  try {
+    res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: email.trim().toLowerCase(),
+        password
+      })
+    });
+  } catch (netErr) {
+    throw new Error('Cannot connect to backend server. Make sure it is running via "npm run dev:all".');
+  }
 
-  const data = await res.json();
+  const data = await parseApiResponse(res);
   if (!res.ok) {
     throw new Error(data.error || 'Invalid email or password.');
   }

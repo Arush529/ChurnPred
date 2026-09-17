@@ -38,5 +38,25 @@
     "role": "Retention Analyst",
     "createdAt": "2026-09-14T04:22:12.952Z",
     "lastLogin": "2026-09-14T04:22:12.952Z"
+  },
+  {
+    "_id": "user_1789365610672_s3azfh",
+    "name": "Arush",
+    "email": "arush.masih29@gmail.com",
+    "passwordHash": "$2b$10$2CnXHzpXxz9KjedHDfOQwOGZHAfTZbBw8DTkf01rkfByB/5aX2JSS",
+    "company": "AUH",
+    "role": "Retention Analyst",
+    "createdAt": "2026-09-14T06:00:10.672Z",
+    "lastLogin": "2026-09-14T06:00:10.672Z"
+  },
+  {
+    "_id": "user_1789666183580_744gal",
+    "name": "abc",
+    "email": "pappu@gmail.com",
+    "passwordHash": "$2b$10$WrbSTpwdFdL5A4zcvQ59cu9ywJFzU0JgPZCXUzK9iYtbg6CTlqIbO",
+    "company": "abc company",
+    "role": "Retention Analyst",
+    "createdAt": "2026-09-17T17:29:43.580Z",
+    "lastLogin": "2026-09-17T17:41:56.070Z"
   }
 ]
